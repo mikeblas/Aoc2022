@@ -7,6 +7,8 @@ fn part1() {
         .expect("Should have been able to read the file");
     let reader = BufReader::new(file);
 
+    aopdkfpaokspdokf
+
     let mut max_weight = 0;
     let mut current_weight = 0;
 

@@ -1,5 +1,3 @@
-
-
 .idea
 *.iml
 .gradle
@@ -15,3 +13,4 @@ testData
 /native-helper/target
 /attributes-info/target
 
+*.bak

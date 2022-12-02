@@ -130,6 +130,8 @@ fn part2() {
     let mut total_score: i32 = 0;
     let mut game_count: i32 = 0;
 
+    let mut fooey: i32 = 0;
+
     for line in reader.lines() {
         let line = line.unwrap();
         let splits: Vec<&str> = line.split(" ").collect();
@@ -143,7 +145,7 @@ fn part2() {
         // println!("{} vs. {}: {} total {}", theirs, mine, this_score, total_score);
         game_count += 1;
     }
-    println!("{} games, total {}", game_count, total_score);
+    println!("{} games read, total {}", game_count, total_score);
 }
 
 fn main() {
