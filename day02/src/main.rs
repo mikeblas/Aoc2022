@@ -143,7 +143,7 @@ fn part2() {
         // println!("{} vs. {}: {} total {}", theirs, mine, this_score, total_score);
         game_count += 1;
     }
-    println!("{} games, total {}", game_count, total_score);
+    println!("{} games read, total {}", game_count, total_score);
 }
 
 fn main() {
