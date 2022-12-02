@@ -130,6 +130,8 @@ fn part2() {
     let mut total_score: i32 = 0;
     let mut game_count: i32 = 0;
 
+    let mut fooey: i32 = 0;
+
     for line in reader.lines() {
         let line = line.unwrap();
         let splits: Vec<&str> = line.split(" ").collect();
