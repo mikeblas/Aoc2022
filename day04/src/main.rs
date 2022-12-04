@@ -4,12 +4,7 @@ use std::io::{BufRead, BufReader};
 fn splitup(s: &str) -> (i32, i32) {
 
     let postsplits: Vec<&str> = s.split("-").collect();
-    // println!("{} {}", postsplits[0], postsplits[1]);
-
-    let start: i32 = postsplits[0].parse().unwrap();
-    let end: i32 = postsplits[1].parse().unwrap();
-
-    (start, end)
+    (postsplits[0].parse::<i32>().unwrap(), postsplits[1].parse::<i32>().unwrap())
 }
 
 fn part1() {
