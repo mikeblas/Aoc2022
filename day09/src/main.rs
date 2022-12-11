@@ -48,7 +48,7 @@ fn part1() {
 }
 
 fn part2() {
-    let file = File::open("src/sample2.txt")
+    let file = File::open("src/input1.txt")
         .expect("Should have been able to read the file");
     let reader = BufReader::new(file);
 
@@ -86,33 +86,64 @@ fn part2() {
 
             for n in 0..knots.len()-1 {
 
-                let mut newtemp : Option<(i32, i32)> = None;
+                let delta = (temp.0 - knots[n+1].0, temp.1 - knots[n+1].1);
 
-                // does it need to move? If so, set newtemp to new location
-                if (temp.0 - knots[n+1].0).abs() > 1 {
-                    newtemp = Some( (knots[n+1].0 - temp.0, knots[n+1].1));
-                }
-                else if (temp.1 - knots[n+1].1).abs() > 1 {
-                    newtemp = Some( (knots[n+1].0, knots[n+1].1));
-                }
+                let movement =
+                    match (delta.0, delta.1) {
+                        // these all require no move because it's equal
+                        // or one away in eight directions
+                        (0,  0) | (0, -1) | ( 0,  1) | (1, 0) | (-1, 0) |
+                        (1, -1) | (-1, 1) | (-1, -1) | (1, 1) => (0, 0),
 
-                if (temp.0 - knots[n+1].0).abs() > 1 || (temp.1 - knots[n+1].1).abs() > 1 {
-                    if temp.0 == knots[n+1].0 {
-                        newtemp = (knots)
-                    }
-                    newtemp = Some(knots[n].clone());
-                }
+                        // two away on NSEW needs an orthogonal move
+                        (2, 0) => (1, 0),
+                        (0, 2) => (0, 1),
+                        (-2, 0) => (-1, 0),
+                        (0, -2) => (0, -1),
 
-                knots[n] = temp.clone();
-                if newtemp == None {
-                    break;
-                }
-                temp = newtemp.unwrap();
+                        // two away in a different column means a diagnoal move
+                        (1, 2) => (1, 1),
+                        (2, 1) => (1, 1),
+                        (2, 2) => (1 ,1),
+
+                        (-1, 2) => (-1, 1),
+                        (-2, 1) => (-1, 1),
+                        (-2, 2) => (-1, 1),
+
+                        (1, -2) => (1, -1),
+                        (2, -1) => (1, -1),
+                        (2, -2) => (1 ,-1),
+
+                        (-1, -2) => (-1, -1),
+                        (-2, -1) => (-1, -1),
+                        (-2, -2) => (-1 ,-1),
+
+                        // backstop
+                        _ => panic!("no plan for {}, {}", delta.0, delta.1)
+                    };
+
+                knots[n] = temp;
+
+                // if we're done moving, bail out because no other knots will move
+                temp = (movement.0 + knots[n+1].0, movement.1 + knots[n+1].1);
             }
 
+            //REVIEW: why can't I code this?
+            // knots[knots.len()-1] = temp;
+            // stuff the last one
+            let last = knots.len()-1;
+            knots[last] = temp;
+
             tailplaces.insert(knots[9]);
+            /*
             println!("knots[0] at {}, {}", knots[0].0, knots[0].1);
             println!(" tail at {}, {}", knots[9].0, knots[9].1);
+            print!(" ");
+            for pt in &knots {
+                print!(" {}, {}; ", pt.0, pt.1);
+            }
+            println!();
+            */
         }
     }
 
