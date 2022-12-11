@@ -1,11 +1,30 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use num::integer::lcm;
+
+fn lcm_list(numbers: Vec<i64>) -> Option<i64> {
+
+    if numbers.len() == 0 {
+        None
+    } else if numbers.len() == 1 {
+        Some(numbers[0])
+    } else {
+
+        let mut ret = lcm(numbers[0], numbers[1]);
+
+        for idx in 2..numbers.len() {
+            ret = lcm(ret, numbers[idx]);
+        }
+
+        Some(ret)
+    }
+}
 
 struct Monkey {
     id: usize,
-    items: Vec<i32>,
+    items: Vec<i64>,
     ops: Vec<String>,
-    divisor: i32,
+    divisor: i64,
     true_target: usize,
     false_target: usize,
     inspection_count: usize
@@ -36,7 +55,7 @@ fn part1(part_two: bool) {
 
         // Starting items: 79, 98
         let colon = lines[idx+1].find(':').unwrap();
-        let items :Vec<i32> = lines[idx+1][colon+2..].split(',').map(|x| x.trim().parse::<i32>().unwrap()).collect();
+        let items :Vec<i64> = lines[idx+1][colon+2..].split(',').map(|x| x.trim().parse::<i64>().unwrap()).collect();
         // println!(" items: ({}), {:?}", items.len(), items);
 
         // Operation: new = old * 19
@@ -46,7 +65,7 @@ fn part1(part_two: bool) {
 
         // Test: divisible by 23
         let by = lines[idx+3].find(" by ").unwrap();
-        let divisor = lines[idx+3][by+4..].parse::<i32>().unwrap();
+        let divisor = lines[idx+3][by+4..].parse::<i64>().unwrap();
         // println!(" divisor: {}", divisor);
 
         // If true: throw to monkey 2
@@ -62,6 +81,11 @@ fn part1(part_two: bool) {
         monkeys.push(m);
     }
 
+    let divisors = monkeys.iter().map(|m| m.divisor).collect();
+    let divisor_lcm = lcm_list(divisors).unwrap();
+    println!("divisor_lcm is {divisor_lcm}");
+
+    // 20 rounds for part1, 10000 rounds in part 2
     let rounds = if part_two { 10000 } else { 20 };
 
     for _ in 0..rounds {
@@ -75,7 +99,7 @@ fn part1(part_two: bool) {
                 let right = if monkeys[n].ops[2] == "old" {
                     old
                 }  else {
-                    monkeys[n].ops[2].parse::<i32>().unwrap()
+                    monkeys[n].ops[2].parse::<i64>().unwrap()
                 };
 
                 let mut new = match monkeys[n].ops[1].as_str() {
@@ -85,7 +109,9 @@ fn part1(part_two: bool) {
                 };
 
                 if !part_two {
-                    new = new / 3;
+                     new = new / 3;
+                } else {
+                    new = new % divisor_lcm;
                 }
 
                 let remainder = new % monkeys[n].divisor;
